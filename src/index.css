@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+/* Tailwind v4 way to enable class-based dark mode */
+@custom-variant dark (&:is(.dark *));
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/30 backdrop-blur-md border border-white/40 shadow-lg dark:bg-black/40 dark:border-gray-700;
+  }
+}
+
+/* Subtle animated background overlay and header sparkle */
+.hero-overlay {
+  background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.02));
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+@keyframes floaty {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+.floaty { animation: floaty 6s ease-in-out infinite; }
+
+.header-glow {
+  text-shadow: 0 6px 30px rgba(255,255,255,0.08);
+}
+
+/* Background visuals */
+.background-root { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.background-root .hero-overlay { opacity: 0.6 }
+
+.sun-wrap { position: absolute; right: 8%; top: 8%; z-index: 0; }
+.sun { border-radius: 9999px; box-shadow: 0 20px 60px rgba(255,200,60,0.25); }
+.sun.big { width: 160px; height: 160px; background: radial-gradient(circle at 30% 30%, #fff9c4, #ffd54f 40%, #ffb300 70%); }
+.sun.small { width: 110px; height: 110px; background: radial-gradient(circle at 30% 30%, #fff7c2, #ffc74d 40%, #ff9f1c 70%); }
+
+.moon { position: absolute; left: 4%; top: 6%; width: 120px; height: 120px; border-radius: 9999px; background: radial-gradient(circle at 35% 30%, #fff, #dfe6f3 40%, #c3cfe2 100%); box-shadow: 0 8px 40px rgba(0,0,0,0.4); z-index:0 }
+.moon:after { content: ''; position: absolute; right: 18%; bottom: 18%; width: 36px; height: 36px; background: rgba(0,0,0,0.08); border-radius: 50%; }
+
+.stars { position: absolute; inset: 0; z-index: 0; }
+.star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; opacity: 0.9; box-shadow: 0 0 8px rgba(255,255,255,0.6); animation: twinkle 3s infinite ease-in-out; }
+
+@keyframes twinkle {
+  0% { opacity: 0.2; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.2; transform: scale(0.8); }
+}
+
+@keyframes floaty { 0%{ transform: translateY(0) } 50%{ transform: translateY(-8px) } 100%{ transform: translateY(0) } }
+.floaty { animation: floaty 6s ease-in-out infinite; }
+
+/* Entrance animations */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(12px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+.fade-in { animation: fadeIn 500ms ease forwards; }
+.slide-up { animation: slideUp 600ms cubic-bezier(.2,.9,.3,1) forwards; }
+.stagger { animation-duration: 520ms; }
+
+/* Ensure background elements don't cover header/search */
+.background-root { pointer-events: none; }
+
+/* Dawn/Dusk overlays */
+.background-root.dawn .hero-overlay { background: linear-gradient(180deg, rgba(255,180,120,0.08), rgba(255,120,80,0.06)); }
+.background-root.dusk .hero-overlay { background: linear-gradient(180deg, rgba(255,120,80,0.06), rgba(48,25,52,0.12)); }
+.background-root.night .hero-overlay { background: linear-gradient(180deg, rgba(0,10,30,0.45), rgba(0,0,0,0.6)); }
+.background-root.day .hero-overlay { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+
+/* Adjust cloud speeds per time of day for atmosphere */
+.background-root.day .cloud-1 { animation-duration: 100s; opacity: 0.95 }
+.background-root.day .cloud-2 { animation-duration: 120s; }
+.background-root.day .cloud-3 { animation-duration: 90s; }
+
+.background-root.dawn .cloud-1 { animation-duration: 60s; transform: translateX(-2vw); opacity: 0.95 }
+.background-root.dawn .cloud-2 { animation-duration: 75s; }
+.background-root.dawn .cloud-3 { animation-duration: 70s; }
+
+.background-root.dusk .cloud-1 { animation-duration: 70s; }
+.background-root.dusk .cloud-2 { animation-duration: 85s; }
+.background-root.dusk .cloud-3 { animation-duration: 80s; }
+
+.background-root.night .cloud-1, .background-root.night .cloud-2, .background-root.night .cloud-3 { opacity: 0.12; filter: blur(6px) }
+
+/* Sun / Moon pulse */
+.sun { animation: floaty 8s ease-in-out infinite, pulse 4s ease-in-out infinite; }
+@keyframes pulse { 0% { box-shadow: 0 20px 60px rgba(255,200,60,0.18) } 50% { box-shadow: 0 40px 120px rgba(255,200,60,0.28) } 100% { box-shadow: 0 20px 60px rgba(255,200,60,0.18) } }
+.moon { animation: floaty 9s ease-in-out infinite, moonGlow 6s ease-in-out infinite; }
+@keyframes moonGlow { 0% { box-shadow: 0 10px 30px rgba(255,255,255,0.06) } 50% { box-shadow: 0 18px 50px rgba(200,220,255,0.12) } 100% { box-shadow: 0 10px 30px rgba(255,255,255,0.06) } }
+
+/* Rain effects */
+.rain { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.raindrop { position: absolute; top: -10%; width: 2px; height: 20px; background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.2)); transform: rotate(-8deg); border-radius: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); animation: raindropFall linear infinite; }
+
+@keyframes raindropFall {
+  0% { transform: translateY(-6vh) rotate(-8deg); opacity: 0 }
+  10% { opacity: 1 }
+  100% { transform: translateY(120vh) rotate(-8deg); opacity: 0.6 }
+}
+
+/* Lightning flash */
+.lightning { position: absolute; inset: 0; z-index: 6; pointer-events: none; animation: lightningFlash 6s linear infinite; }
+@keyframes lightningFlash {
+  0% { opacity: 0 }
+  2% { opacity: 0.98; background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.9), rgba(255,255,255,0.2)); }
+  6% { opacity: 0.2 }
+  8% { opacity: 0 }
+  100% { opacity: 0 }
+}
+
+/* when raining at night, tint raindrops bluish */
+.background-root.night .raindrop { background: linear-gradient(180deg, rgba(200,230,255,0.95), rgba(150,190,255,0.25)); box-shadow: 0 2px 8px rgba(80,120,190,0.15); }
+
+/* Canvas splash area */
+.splash-canvas { position: absolute; left: 0; right: 0; bottom: 0; height: 160px; z-index: 8; pointer-events: none; }
+
+
+/* Make sure content floats above background */
+.max-w-6xl, main, header { position: relative; z-index: 10 }
+
+/* Clouds */
+.clouds { position: absolute; inset: 0; z-index: 0; overflow: visible; }
+.cloud { position: absolute; background: rgba(255,255,255,0.85); filter: blur(14px); border-radius: 999px; opacity: 0.9; }
+.cloud-1 { width: 420px; height: 120px; left: -10%; top: 6%; transform: translateX(0); animation: cloudMove 80s linear infinite; }
+.cloud-2 { width: 300px; height: 90px; left: 20%; top: 18%; transform: translateX(0); animation: cloudMove 110s linear infinite reverse; opacity: 0.85; }
+.cloud-3 { width: 240px; height: 70px; left: 60%; top: 4%; transform: translateX(0); animation: cloudMove 95s linear infinite; opacity: 0.8; }
+
+@keyframes cloudMove {
+  0% { transform: translateX(-8vw); }
+  100% { transform: translateX(120vw); }
+}
+
+/* Improve card hover and transitions */
+.glass-card { transition: transform 220ms ease, box-shadow 220ms ease; }
+.glass-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 25px 60px rgba(0,0,0,0.35); }
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .sun.big { width: 96px; height: 96px; right: 6%; top: 6%; }
+  .moon { width: 80px; height: 80px; left: 6%; top: 8%; }
+}
